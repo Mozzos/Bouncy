@@ -6,7 +6,8 @@ use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use Carbon\Carbon;
 
-trait BouncyTrait {
+trait
+BouncyTrait {
 
     /**
      * @var null|float
@@ -34,14 +35,12 @@ trait BouncyTrait {
      * @param array $body
      * @return integer
      */
-    public static function count(Array $body)
+    public static function indexCount(Array $body)
     {
         $instance = new static;
         $params = $instance->basicElasticParams();
         $params['body'] = $body;
-
         $response = $instance->getElasticClient()->count($params);
-
         return intval($response['count']);
     }
 
@@ -290,15 +289,14 @@ trait BouncyTrait {
     }
 
     /**
-     * Gets the model's fields.
-     *
-     * @return array
-     */
+    * Gets the model's fields.
+    *
+    * @return array
+    */
     public function documentFields()
     {
         return $this->toArray();
     }
-
     /**
      * Indexes the model in Elasticsearch.
      *
@@ -306,10 +304,18 @@ trait BouncyTrait {
      */
     public function index()
     {
+        if($this->getTable()=='product'){
+            if($this->type && $this->type=='virtual'){
+                $this->typeName='Service';
+            }
+        }
         $params = $this->basicElasticParams(true);
         $params['body'] = $this->documentFields();
+        try {
+            return $this->getElasticClient()->index($params);
+        } catch (\Exception $e) {
 
-        return $this->getElasticClient()->index($params);
+        }
     }
 
     /**
@@ -332,13 +338,13 @@ trait BouncyTrait {
         else {
             return true;
         }
-
+        
         foreach ($body as $field => $value) {
             if ($value instanceof Carbon) {
                 $body[$field] = $value->toDateTimeString();
             }
         }
-        
+
         $params = $this->basicElasticParams(true);
         $params['body']['doc'] = $body;
 
@@ -407,7 +413,7 @@ trait BouncyTrait {
      */
     public function save(Array $options = array())
     {
-        if (Config::get('bouncy::config.auto_index')) {
+        if (Config::get('bouncy.auto_index')) {
             $params = $this->basicElasticParams(true);
 
             // When creating a model, Eloquent still
@@ -437,9 +443,9 @@ trait BouncyTrait {
      *
      * @return mixed
      */
-    public function delete()
+    public function deleteIndex()
     {
-        if (Config::get('bouncy::config.auto_index')) {
+        if (Config::get('bouncy.auto_index')) {
             $this->removeIndex();
         }
 
@@ -457,7 +463,7 @@ trait BouncyTrait {
             return $this->indexName;
         }
 
-        return Config::get('bouncy::config.index');
+        return Config::get('bouncy.index');
     }
 
     /**
@@ -488,7 +494,7 @@ trait BouncyTrait {
     /**
      * Returns the document score.
      *
-     * @return null\float
+     * @return \float
      */
     public function documentScore()
     {
@@ -593,7 +599,7 @@ trait BouncyTrait {
      */
     protected function getElasticClient()
     {
-        return new ElasticSearch(Config::get('bouncy::elasticsearch'));
+        return new ElasticSearch(Config::get('elasticsearch'));
     }
 
 }
