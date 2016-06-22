@@ -304,9 +304,11 @@ BouncyTrait {
      */
     public function index()
     {
-        if($this->getTable()=='product'){
-            if($this->type && $this->type=='virtual'){
-                $this->typeName='Service';
+        if(isset($this->morphType)){
+            foreach ($this->morphType as $key => $value){
+                if(isset($value[$this->$key])){
+                    $this->typeName=$value[$this->$key];
+                }
             }
         }
         $params = $this->basicElasticParams(true);
