@@ -304,13 +304,6 @@ BouncyTrait {
      */
     public function index()
     {
-        if(isset($this->morphType)){
-            foreach ($this->morphType as $key => $value){
-                if(isset($value[$this->$key])){
-                    $this->typeName=$value[$this->$key];
-                }
-            }
-        }
         $params = $this->basicElasticParams(true);
         $params['body'] = $this->documentFields();
         try {
