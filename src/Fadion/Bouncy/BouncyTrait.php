@@ -418,8 +418,9 @@ BouncyTrait {
             if (! isset($params['id'])) {
                 $saved = parent::save($options);
                 $this->index();
-
                 return $saved;
+            }else{
+                $this->reindex();
             }
 
             // When updating fails, it means that the
