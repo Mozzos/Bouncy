@@ -20,6 +20,11 @@ BouncyTrait {
     protected $documentVersion = null;
 
     /**
+     * @var null|string
+     */
+    protected $documentType = null;
+
+    /**
      * @var bool
      */
     protected $isDocument = false;
@@ -508,6 +513,16 @@ BouncyTrait {
     }
 
     /**
+     * Returns the document type.
+     *
+     * @return null|int
+     */
+    public function documentType()
+    {
+        return $this->documentType;
+    }
+
+    /**
      * Returns a highlighted field.
      *
      * @param string $field
@@ -555,6 +570,10 @@ BouncyTrait {
 
         if (isset($hit['_version'])) {
             $instance->documentVersion = $hit['_version'];
+        }
+
+        if (isset($hit['_type'])) {
+            $instance->documentType = $hit['_type'];
         }
 
         if (isset($hit['highlight'])) {
