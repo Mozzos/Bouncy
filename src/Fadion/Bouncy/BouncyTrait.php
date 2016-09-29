@@ -562,6 +562,16 @@ BouncyTrait {
 
         $attributes = $hit['_source'];
 
+        try{
+            $instance = $instance->find($attributes['id']);
+        } catch (\Exception $e){
+            try{
+                $instance = app('Mozzos\\Models\\'.ucfirst($hit['_type']))->find($attributes['id']);
+            } catch (\Exception $e){
+                $instance->setRawAttributes($attributes, true);
+            }
+        }
+
         $instance->isDocument = true;
 
         if (isset($hit['_score'])) {
@@ -581,8 +591,6 @@ BouncyTrait {
                 $instance->highlighted[$field] = $value[0];
             }
         }
-
-        $instance = $instance->find($attributes['id']);
 
         return $instance;
     }
