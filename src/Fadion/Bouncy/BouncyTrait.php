@@ -582,7 +582,7 @@ BouncyTrait {
             }
         }
 
-        $instance->setRawAttributes($attributes, true);
+        $instance = $instance->find($attributes['id']);
 
         return $instance;
     }
