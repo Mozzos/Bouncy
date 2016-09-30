@@ -29,12 +29,16 @@ class ElasticCollection extends Collection {
      */
     public function paginate($perPage = 15)
     {
-        $paginator = new LengthAwarePaginator($this->items,$this->total(), $perPage);
+        $page =  Paginator::resolveCurrentPage('page');
+        $paginator = new LengthAwarePaginator($this->items,$this->total(), $perPage, $page);
 
         $start = ($paginator->currentPage() - 1) * $perPage;
         $sliced = array_slice($this->items, $start, $perPage);
 
-        return new LengthAwarePaginator($sliced,$this->total(), $perPage);
+        return new LengthAwarePaginator($sliced,$this->total(), $perPage, $page,[
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => 'page',
+        ]);
     }
 
     /**
