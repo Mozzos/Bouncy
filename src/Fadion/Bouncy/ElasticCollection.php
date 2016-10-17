@@ -85,7 +85,10 @@ class ElasticCollection extends Collection {
      */
     public function total()
     {
-        return $this->response['hits']['total'];
+        if (isset($this->response['hits'])){
+            return $this->response['hits']['total'];
+        }
+        return [];
     }
 
     /**
