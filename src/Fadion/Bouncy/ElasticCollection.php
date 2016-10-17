@@ -88,7 +88,7 @@ class ElasticCollection extends Collection {
         if (isset($this->response['hits'])){
             return $this->response['hits']['total'];
         }
-        return [];
+        return 0;
     }
 
     /**
