@@ -566,7 +566,7 @@ BouncyTrait {
             $instance = $instance->find($attributes['id']);
         } catch (\Exception $e){
             try{
-                $instance = app('Mozzos\\Models\\'.ucfirst($hit['_type']))->find($attributes['id']);
+                $instance = app('Mozzos\\Models\\'.ucfirst($hit['_type']))->whereUuid($attributes['uuid'])->first();
             } catch (\Exception $e){
                 $instance->setRawAttributes($attributes, true);
             }
